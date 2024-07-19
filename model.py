@@ -63,9 +63,9 @@ class Attention(nn.Module):
         # print(beta.shape)
         return (beta * z).sum(1), beta
 
-class SFGCN(nn.Module):
+class HiGLDP(nn.Module):
     def __init__(self, nfeat, nclass, nhid1, nhid2, n, dropout):
-        super(SFGCN, self).__init__()
+        super(HiGLDP, self).__init__()
         
         # final
         self.SGAT1 = GAT(256, 128, 256, dropout)

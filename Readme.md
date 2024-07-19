@@ -26,7 +26,7 @@
 - `function.py` some functions used in model
 - `main.py` train model and predict
 
-## data(我觉得可有可无)
+## data
 
 
 

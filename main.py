@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 from function import *
-from models import SFGCN
+from model import HiGLDP
 # import tensorflow as tf
 from config import Config
 # from torch.utils.data import Dataset, DataLoader
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         asadj = get_adj(sadj)
         afadj = get_adj(fadj)
 
-        model = SFGCN(nfeat=config.fdim,
+        model = HiGLDP(nfeat=config.fdim,
                      nhid1=config.nhid1,
                      nhid2=config.nhid2,
                      nclass=config.class_num,
