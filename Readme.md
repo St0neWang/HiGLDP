@@ -14,17 +14,40 @@ A computational model designed to predict lncRNA-disease associations through mu
 
 ### `Dataset/DenoisingAutoencoder/` directory
 - `DAE.py` Denoising Autoencoder implementation
-- `run_DAE.py` run `DAE.py` to obtain low dimensional feature
+- `runDAE.py` run `DAE.py` feature extraction
 
 ### `Dataset/` directory
 - `data_concat.py` obtain the features of all lncRNA-disease association pairs
-- `dataprocess.py` uses KNN to get feature graph
+- `dataprocess.py` uses cosine similarity to get association feature graph
 
 ### `./` directory
 - `config.py` the configure of model
 - `model.py` HiGLDP model
 - `function.py` some functions used in model
-- `main.py` train model and predict
+- `main.py` train model and test
+
+
+## Data
+
+### `Dataset/data/` directory
+- `lncid.txt` lncRNA id
+- `disid.txt` disease id
+- `mat_DO_circRNA.txt` disease-circRNA association matrix
+- `mat_DO_Metabolite.txt` disease-metabolite association matrix
+- `Similarity_Matrix_DO.txt` disease similarity from FNSemSim method
+- `mat_Lnc_DO.txt` lncRNA-disease association matrix
+- `mat_Lnc_mRNA.txt` lncRNA-mRNA association matrix
+- `mat_Lnc_Protein.txt` lncRNA-protein association matrix
+- `mat_Lnc_RBP.txt` lncRNA-RBP association matrix
+- `index.txt` all indices of lncrna-disease pairs for training and testing
+- `label.txt` the labels for index file **index.txt**
+
+### `5fold` and `10fold` directory
+the datasets for 5-fold and 10-fold cross validation
+- `edgex.txt` the interconnected graph of train dataset
+- `trainx.txt` the lncrna-disease pairs' indices for training
+- `testx.txt` the lncrna-disease pairs' indices for testing
+
 
 
 
@@ -33,12 +56,12 @@ A computational model designed to predict lncRNA-disease associations through mu
 ### dataprocess
 - run `./Dataset/matlab/similarity_generate.m`
 - run `./Dataset/matlab/run_joint.m`
-- run `./Dataset/DenoisingAutoencoder/run_DAE.py`
-- run `./Dataset/data_concat.py` to obtain the features of all lncRNA-disease pairs
-- run `./Dataset/dataprocess.py` to get feature graph by KNN
+- run `./Dataset/DenoisingAutoencoder/runDAE.py`
+- run `./Dataset/data_concat.py`
+- run `./Dataset/dataprocess.py`
 
 
-### model training and predicted results
+### model training and test results
 - run `main.py`
 
 ## Requirments
