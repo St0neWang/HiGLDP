@@ -6,11 +6,10 @@ import torch.nn.functional as F
 import torch.optim as optim
 from function import *
 from model import HiGLDP
-# import tensorflow as tf
 from config import Config
-# from torch.utils.data import Dataset, DataLoader
 import gc
 import random
+from torch.utils.data import Dataset, DataLoader
 
 
 def set_random_seed(seed, deterministic=False):
@@ -22,6 +21,22 @@ def set_random_seed(seed, deterministic=False):
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
+class GraphDataset(Dataset):
+    def __init__(self, features, sadj, fadj, asadj, afadj, labels, idx):
+        self.features = features
+        self.sadj = sadj
+        self.fadj = fadj
+        self.asadj = asadj
+        self.afadj = afadj
+        self.labels = labels
+        self.idx = idx
+
+    def __len__(self):
+        return len(self.idx)
+
+    def __getitem__(self, index):
+        i = self.idx[index]
+        return (self.features[i], self.sadj[i], self.fadj[i], self.asadj[i], self.afadj[i], self.labels[i])
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -29,26 +44,29 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def train(model, epochs):
     model.train()
-    optimizer.zero_grad()
-    output = model(features, sadj, fadj, asadj, afadj).cpu()
-    loss = F.nll_loss(output[idx_train], labels[idx_train])
-    loss.backward()
-    optimizer.step()
-    score_auc, score_aupr, score_acc = test(model, labels)
+    for batch in train_loader:
+        features, sadj, fadj, asadj, afadj, labels = batch
+        optimizer.zero_grad()
+        output = model(features, sadj, fadj, asadj, afadj).cpu()
+        loss = F.nll_loss(output, labels)
+        loss.backward()
+        optimizer.step()
+    score_auc, score_aupr, score_acc = test(model, test_loader)
     # torch.cuda.empty_cache()
     print("this is the", epochs + 1, "epochs, AUC is {:.4f} and AUPR is {:.4f} accuray is {:.4f},loss is {:.4f} ".format(score_auc, score_aupr, score_acc, loss))
 
-def test(model, labels):
+def test(model, test_loader):
     model.eval()
+    roc, pr, acc = [], [], []
     with torch.no_grad():
-        output = model(features, sadj, fadj, asadj, afadj)
-        output = output.cpu()
-        labels = labels.cpu()
-        score_auc, score_aupr, score_acc = RocAndAupr(output[idx_test], labels[idx_test])
-        roc.append(score_auc)
-        pr.append(score_aupr)
-        acc.append(score_acc)
-    return score_auc, score_aupr, score_acc
+        for batch in test_loader:
+            features, sadj, fadj, asadj, afadj, labels = batch
+            output = model(features, sadj, fadj, asadj, afadj).cpu()
+            score_auc, score_aupr, score_acc = RocAndAupr(output, labels)
+            roc.append(score_auc)
+            pr.append(score_aupr)
+            acc.append(score_acc)
+    return np.mean(roc), np.mean(pr), np.mean(acc)
 
 if __name__ == "__main__":
     config_file = "./config/200dti.ini"
@@ -79,11 +97,16 @@ if __name__ == "__main__":
                      n=config.n,
                      dropout=config.dropout).to(device)
 
-        features = features.to(device)
-        sadj = sadj.to(device)
-        fadj = fadj.to(device)
-        asadj = asadj.to(device)
-        afadj = afadj.to(device)
+        # features = features.to(device)
+        # sadj = sadj.to(device)
+        # fadj = fadj.to(device)
+        # asadj = asadj.to(device)
+        # afadj = afadj.to(device)
+        train_dataset = GraphDataset(features, sadj, fadj, asadj, afadj, labels, idx_train)
+        test_dataset = GraphDataset(features, sadj, fadj, asadj, afadj, labels, idx_test)
+
+        train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+        test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
         optimizer = optim.Adam(model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
         roc = []

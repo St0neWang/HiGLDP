@@ -89,6 +89,8 @@ class HiGLDP(nn.Module):
         )
 
     def forward(self, x, sadj, fadj, asadj, afadj):
+        sadj = sadj.coalesce()
+        fadj = fadj.coalesce()
         emb1 = torch.relu(self.CGCN1(x, sadj))
         emb2 = torch.relu(self.SGAT1(emb1, asadj))
         emb3 = torch.relu(self.CGCN3(emb2, sadj))

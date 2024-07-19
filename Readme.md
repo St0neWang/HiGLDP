@@ -1,7 +1,7 @@
 # HiGLDP
 
 ## Overview
-
+A computational model designed to predict lncRNA-disease associations through multi-omic integration and advanced graph neural network techniques.
 
 ## Code
 
@@ -26,8 +26,6 @@
 - `function.py` some functions used in model
 - `main.py` train model and predict
 
-## data
-
 
 
 ## Useage
@@ -35,9 +33,9 @@
 ### dataprocess
 - run `./Dataset/matlab/similarity_generate.m`
 - run `./Dataset/matlab/run_joint.m`
-- run `./Dataset/DAE/run_DAE.py`
-- run `data_concat.py` to obtain the features of all lncRNA-disease pairs
-- run `dataprocess.py` to get feature graph by KNN
+- run `./Dataset/DenoisingAutoencoder/run_DAE.py`
+- run `./Dataset/data_concat.py` to obtain the features of all lncRNA-disease pairs
+- run `./Dataset/dataprocess.py` to get feature graph by KNN
 
 
 ### model training and predicted results

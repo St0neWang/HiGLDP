@@ -26,7 +26,7 @@ def generate_knn():
         data = np.loadtxt('LDA_feature.txt', dtype=float)
         construct_graph(data, topk)
         f1 = open('../knn/tmp.txt', 'r')
-        f2 = open('../knn/c'+str(topk)+'.txt', 'w')
+        f2 = open('../KNN/knn'+str(topk)+'.txt', 'w')
         lines = f1.readlines()
         for line in lines:
             start, end = line.strip('\n').split(' ')
