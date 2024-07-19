@@ -64,16 +64,4 @@ the datasets for 5-fold and 10-fold cross validation
 ### model training and test results
 - run `main.py`
 
-## Requirments
 
-```python
-networkx==3.1
-numpy==1.23.5
-pandas==1.5.3
-scikit_learn==1.3.0
-scipy==1.10.1
-tensorflow==2.10.0
-torch==1.13.1
-torch_geometric==2.3.1
-tqdm==4.66.1
-```

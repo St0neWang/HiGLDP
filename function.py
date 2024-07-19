@@ -8,22 +8,6 @@ import networkx as nx
 from sklearn.metrics import auc as auc3
 from sklearn.metrics import roc_curve, precision_recall_curve, accuracy_score
 
-def RocAndAupr(output, labels):
-    predict = []
-
-    for i in range(len(output)):
-        a = output[i].detach().numpy()
-        predict.append(float(a[1]))
-    fpr, tpr, thresholds = roc_curve(labels, predict, pos_label=1)
-    c = auc3(fpr, tpr)
-    precision, recall, thresholds = precision_recall_curve(labels, predict)
-    d = auc3(recall, precision)
-    preds = output.max(1)[1].type_as(labels)
-    acc = accuracy_score(labels, preds)
-
-    return c, d, acc
-
-
 def sparse_mx_to_torch_sparse_tensor(sparse_mx):
     sparse_mx = sparse_mx.tocoo().astype(np.float32)
     indices = torch.from_numpy(np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
@@ -81,6 +65,22 @@ def load_graph(config):
     nfadj = sparse_mx_to_torch_sparse_tensor(nfadj)
 
     return nsadj, nfadj
+
+def score(output, labels):
+    predict = []
+    for i in range(len(output)):
+        a = output[i].detach().numpy()
+        predict.append(float(a[1]))
+    fpr, tpr, thresholds = roc_curve(labels, predict, pos_label=1)
+    auroc = auc3(fpr, tpr)
+    precision, recall, thresholds = precision_recall_curve(labels, predict)
+    aupr = auc3(recall, precision)
+    preds = output.max(1)[1].type_as(labels)
+    acc = accuracy_score(labels, preds)
+
+    return auroc, aupr, acc
+
+
 
 def get_adj(adj):
     rows = []

@@ -1,9 +1,9 @@
 [Model_Setup]
-epochs =200
+epochs = 200
 lr = 0.001
-weight_decay =1e-3
+weight_decay = 1e-3
 k = 1
-nhid1 =512
+nhid1 = 512
 nhid2 = 256
 dropout = 0.3
 beta =  0
@@ -17,7 +17,7 @@ n = 22622
 fdim = 1000
 class_num = 2
 structgraph_path = ./5fold/edge
-featuregraph_path = ./afg/afg
+featuregraph_path = ./Dataset/afg/afg
 feature_path = ./Dataset/LDA_feature.txt
 label_path = ./Dataset/data/label.txt
 test_path = ./5fold/test
